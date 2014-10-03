@@ -13,6 +13,12 @@ httpのstatus codeを指定する
 status code だけでなく、エラー情報が詰まったjsonも必要な場合利用する。
 
 ## sample
+http://error-responser.herokuapp.com/404
+
+```
+404 Not Found
+```
+
 http://error-responser.herokuapp.com/404/1
 
 ```json
