@@ -1,5 +1,18 @@
-from flask import Flask, abort, json, jsonify
+import os
+import pdb
+from flask import Flask, request, session, g, redirect, url_for, \
+     abort, render_template, flash, json, jsonify
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
+
+# create our little application :)
+print os.environ['APP_SETTINGS']
+
 app = Flask(__name__)
+app.config.from_object(os.environ['APP_SETTINGS'])
+db = SQLAlchemy(app)
+Bootstrap(app)
+logger = app.logger
 
 class InvalidUsage(Exception):
     status_code = 400
@@ -35,11 +48,36 @@ def error_response_and_error_code(status_code, error_code):
     print "set status code %d, error code %d" % (status_code, error_code)
     raise InvalidUsage(error_code=error_code, status_code=status_code)
 
+@app.errorhandler(404)
+def notfound(e):
+    print dir(e)
+    print e.code
+    if e.code == 404:
+        print "it's 404"
+    return e
+
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_json())
     response.status_code = error.status_code
     return response
+
+
+class AppSetting(db.Model):
+  __tablename__ = 'app_settings'
+
+  id = db.Column(db.Integer, primary_key=True)
+  app_name = db.Column(db.String())
+  status_code = db.Column(db.Integer())
+
+  def __init__(self, app_name, status_code):
+    self.app_name = app_name
+    self.status_code = status_code
+
+  def __repr__(self):
+    return 'AppSetting %d %s %d' % (self.id, self.app_name, self.status_code)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
