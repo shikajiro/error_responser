@@ -6,20 +6,26 @@ python、Flaskを利用。herokuにて稼働中。
 
 ## design
 ### URL
-http://error-responser.herokuapp.com/{status_code}/{error_code}
-### status_code
-httpのstatus codeを指定する
-### error_code
-status code だけでなく、エラー情報が詰まったjsonも必要な場合利用する。
+http://error-responser.herokuapp.com/{app_name}
+### app_name
+利用するアプリケーションの名前などを設定する。
+
+## use
+http://error-responser.herokuapp.com/{app_name} でアプリ名とstatus_codeを設定した後、http://error-responser.herokuapp.com/{app_name}/(以下任意) にアクセスすると指定したエラーを返す。
 
 ## sample
-http://error-responser.herokuapp.com/404
+http://error-responser.herokuapp.com/shikajiro
+で、404を設定したあと、以下にアクセスする。
+
+http://error-responser.herokuapp.com/shikajiro/hogehoge
 
 ```
 404 Not Found
 ```
+http://error-responser.herokuapp.com/shikajiro
+で、status_codeを404、error_codeを1に設定したあと、以下にアクセスする。
 
-http://error-responser.herokuapp.com/404/1
+http://error-responser.herokuapp.com/shikajiro/hoge
 
 ```json
 {
