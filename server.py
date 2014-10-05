@@ -34,28 +34,58 @@ class InvalidUsage(Exception):
         }
         return error_json
 
-@app.route('/')
-def hello_world():
-    return 'Hello Error Responser!'
+@app.route("/")
+def index():
+    results = AppSetting.query.all()
+    app_settings = []
+    for result in results:
+        item = {
+            "app_name"      :result.app_name,
+            "status_code"   :result.status_code,
+            "error_code"    :result.error_code
+        }
+        app_settings.append(item)
+    return render_template('show_entries.html', app_settings=app_settings)
 
-@app.route('/<int:status_code>')
-def error_response(status_code):
-    print "set status code %d" % (status_code)
-    abort(status_code)
+@app.route("/<app_name>")
+def app_name(app_name):
+    app_setting = AppSetting.query.filter_by(app_name=app_name).first()
+    if app_setting is None:
+        app_setting = AppSetting(app_name=app_name, status_code=404, error_code=None)
+        db.session.add(app_setting)
+        db.session.commit()
+    item = {
+        "app_name"      :app_setting.app_name,
+        "status_code"   :app_setting.status_code,
+        "error_code"    :app_setting.error_code
+    }
+    return render_template('edit_app_setting.html', app_setting=item)
 
-@app.route('/<int:status_code>/<int:error_code>')
-def error_response_and_error_code(status_code, error_code):
-    print "set status code %d, error code %d" % (status_code, error_code)
-    raise InvalidUsage(error_code=error_code, status_code=status_code)
+@app.route("/<app_name>", methods=['POST'])
+def post_app_name(app_name):
+    print request.form
+    app_setting = AppSetting.query.filter_by(app_name=app_name).first()
+    app_setting.status_code = request.form["status_code"]
+    app_setting.error_code = request.form["error_code"]
+    db.session.add(app_setting)
+    db.session.commit()
+    return "set %s/%s" % (app_setting.status_code, app_setting.error_code)
 
-@app.errorhandler(404)
-def notfound(e):
-    print dir(e)
-    print e.code
-    if e.code == 404:
-        print "it's 404"
-    return e
+@app.route('/<app_name>/<path:path>')
+def catch_all(app_name, path):
+    print 'You want %s path: %s' % (app_name, path)
+    app_setting = AppSetting.query.filter_by(app_name=app_name).first()
+    if app_setting is None:
+        app_setting = AppSetting(app_name=app_name, status_code=404)
+        db.session.add(app_setting)
+        db.session.commit()
 
+    print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
+
+    if int(app_setting.error_code) < 0:
+        abort(app_setting.status_code)
+    else:
+        raise InvalidUsage(status_code=app_setting.status_code, error_code=app_setting.error_code)
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
@@ -63,22 +93,23 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
-
 class AppSetting(db.Model):
   __tablename__ = 'app_settings'
 
   id = db.Column(db.Integer, primary_key=True)
   app_name = db.Column(db.String())
   status_code = db.Column(db.Integer())
+  error_code = db.Column(db.Integer())
 
-  def __init__(self, app_name, status_code):
+  def __init__(self, app_name, status_code, error_code):
     self.app_name = app_name
     self.status_code = status_code
+    self.error_code = error_code
 
   def __repr__(self):
-    return 'AppSetting %d %s %d' % (self.id, self.app_name, self.status_code)
-
+    return 'AppSetting %d %s %d' % (self.id, self.app_name, self.status_code, self.error_code)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+    # app.run(host='0.0.0.0')
     # app.run()

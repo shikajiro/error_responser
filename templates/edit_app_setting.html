@@ -1,0 +1,22 @@
+{% extends "bootstrap/base.html" %}
+{% block title %} MRM {% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <form class="form-signin" role="form" action="{{ url_for('post_app_name', app_name=app_setting.app_name) }}" method=post>
+    <h2 class="form-signin-heading">{{ app_setting.app_name }} setting status code</h2>
+    <input type="text" class="form-control" placeholder="status_code" name="status_code" required="" autofocus="">
+    <input type="text" class="form-control" placeholder="error_code" name="error_code" >
+    <button class="btn btn-lg btn-primary btn-block" type="submit">save</button>
+  </form>
+
+</div>
+{% endblock %}
