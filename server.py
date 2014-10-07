@@ -71,7 +71,7 @@ def post_app_name(app_name):
     db.session.commit()
     return "set %s/%s" % (app_setting.status_code, app_setting.error_code)
 
-@app.route('/<app_name>/<path:path>')
+@app.route('/<app_name>/<path:path>', methods=['GET','POST'])
 def catch_all(app_name, path):
     print 'You want %s path: %s' % (app_name, path)
     app_setting = AppSetting.query.filter_by(app_name=app_name).first()
