@@ -12,4 +12,4 @@ manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
     manager.run()
-# postgresql+psycopg2:///error_responser
+# export DATABASE_URL="postgresql+psycopg2:///error_responser"
