@@ -90,7 +90,10 @@ def catch_all(app_name, path):
         db.session.commit()
 
     # print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
-
+    print app_setting.status_cod
+    print int(app_setting.status_code)
+    print int(app_setting.status_code) / 100
+    print int(app_setting.status_code) / 100 == 2
     if int(app_setting.status_code)/100 == 2:
         print "success"
         # pdb.set_trace()
