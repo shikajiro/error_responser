@@ -94,22 +94,22 @@ def catch_all(app_name, path):
     if int(app_setting.status_code)/100 == 2:
         # pdb.set_trace()
         url = app_setting.app_url + path
-        print "%s url %s" % (request.method, url)
+        # print "%s url %s" % (request.method, url)
 
         headers = {}
         auth = request.headers.get("Authorization")
         if auth:
             headers["Authorization"] = auth
-        print "headers %s" % headers
+        # print "headers %s" % headers
 
         res = ""
         if request.method == 'POST':
-            print "data %s" % request.form
+            # print "data %s" % request.form
             res = requests.post(url, data=request.form, headers=headers)
         elif request.method == 'GET':
-            print "params %s" % request.args
+            # print "params %s" % request.args
             res = requests.get(url, params=request.args, headers=headers)
-        print res.url
+        # print res.url
         # pdb.set_trace()
         return res.text
     else:
