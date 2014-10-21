@@ -82,47 +82,32 @@ def post_app_name(app_name):
 @app.route('/<app_name>/<path:path>', methods=['GET','POST'])
 def catch_all(app_name, path):
     print 'You want %s path: %s' % (app_name, path)
-    # print '%s' % request.headers
+    print '%s' % request.headers
     app_setting = AppSetting.query.filter_by(app_name=app_name).first()
-    print "filter"
     if app_setting is None:
-        print "is None"
         app_setting = AppSetting(app_name=app_name, status_code=404)
-        print "app_setting"
         db.session.add(app_setting)
-        print "add"
         db.session.commit()
-        print "commit"
 
-    # print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
-    print "status_code"
-    print app_setting.status_code
-    print int(app_setting.status_code)
-    print int(app_setting.status_code) / 100
-    print int(app_setting.status_code) / 100 == 2
+    print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
     if int(app_setting.status_code)/100 == 2:
-        print "success"
-        # pdb.set_trace()
         url = app_setting.app_url + path
-        # print "%s url %s" % (request.method, url)
+        print "%s url %s" % (request.method, url)
         print url
         headers = {}
         auth = request.headers.get("Authorization")
         if auth:
             headers["Authorization"] = auth
-        # print "headers %s" % headers
+        print "headers %s" % headers
 
         res = ""
         if request.method == 'POST':
-            print "post"
-            # print "data %s" % request.form
+            print "data %s" % request.form
             res = requests.post(url, data=request.form, headers=headers)
         elif request.method == 'GET':
-            print "get"
-            # print "params %s" % request.args
+            print "params %s" % request.args
             res = requests.get(url, params=request.args, headers=headers)
-        # print res.url
-        # pdb.set_trace()
+        print res.url
         return res.text
     else:
         print "error"
