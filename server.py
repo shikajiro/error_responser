@@ -81,7 +81,7 @@ def post_app_name(app_name):
 
 @app.route('/<app_name>/<path:path>', methods=['GET','POST'])
 def catch_all(app_name, path):
-    print 'You want %s path: %s' % (app_name, path)
+    # print 'You want %s path: %s' % (app_name, path)
     # print '%s' % request.headers
     app_setting = AppSetting.query.filter_by(app_name=app_name).first()
     if app_setting is None:
