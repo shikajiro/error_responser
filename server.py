@@ -86,12 +86,17 @@ def catch_all(app_name, path):
     app_setting = AppSetting.query.filter_by(app_name=app_name).first()
     print "filter"
     if app_setting is None:
+        print "is None"
         app_setting = AppSetting(app_name=app_name, status_code=404)
+        print "app_setting"
         db.session.add(app_setting)
+        print "add"
         db.session.commit()
+        print "commit"
 
     # print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
-    print app_setting.status_cod
+    print "status_code"
+    print app_setting.status_code
     print int(app_setting.status_code)
     print int(app_setting.status_code) / 100
     print int(app_setting.status_code) / 100 == 2
