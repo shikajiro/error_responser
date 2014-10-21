@@ -82,14 +82,14 @@ def post_app_name(app_name):
 @app.route('/<app_name>/<path:path>', methods=['GET','POST'])
 def catch_all(app_name, path):
     print 'You want %s path: %s' % (app_name, path)
-    print '%s' % request.headers
+    # print '%s' % request.headers
     app_setting = AppSetting.query.filter_by(app_name=app_name).first()
     if app_setting is None:
         app_setting = AppSetting(app_name=app_name, status_code=404)
         db.session.add(app_setting)
         db.session.commit()
 
-    print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
+    # print "set status code %s, error code %s" % (app_setting.status_code, app_setting.error_code)
 
     if int(app_setting.status_code)/100 == 2:
         print "success"
